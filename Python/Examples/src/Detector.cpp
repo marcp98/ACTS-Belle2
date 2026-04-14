@@ -16,6 +16,8 @@
 #include "ActsExamples/Framework/IContextDecorator.hpp"
 #include "ActsExamples/GenericDetector/AlignedGenericDetector.hpp"
 #include "ActsExamples/GenericDetector/GenericDetector.hpp"
+#include "ActsExamples/Belle2/Belle2.hpp"
+#include "ActsExamples/Belle2/AlignedBelle2.hpp"
 #include "ActsExamples/TelescopeDetector/TelescopeDetector.hpp"
 #include "ActsExamples/Utilities/Options.hpp"
 #include "ActsPython/Utilities/Helpers.hpp"
@@ -78,6 +80,17 @@ void addDetector(py::module& mex) {
                          std::shared_ptr<AlignedGenericDetector>>(
                   mex, "AlignedGenericDetector")
                   .def(py::init<const GenericDetector::Config&>());
+  }
+  {
+    auto d =
+        py::class_<Belle2, Detector, std::shared_ptr<Belle2>>(
+            mex, "Belle2")
+            .def(py::init<const Belle2::Config&>());
+
+    auto c = py::class_<Belle2::Config>(d, "Config").def(py::init<>());
+    ACTS_PYTHON_STRUCT(c, buildLevel, logLevel, surfaceLogLevel, layerLogLevel,
+                       volumeLogLevel, buildProto, materialDecorator, gen3,
+                       graphvizFile);
   }
 
   {

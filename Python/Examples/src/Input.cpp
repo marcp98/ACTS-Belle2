@@ -19,6 +19,8 @@
 #include "ActsExamples/TrackFinding/ITrackParamsLookupReader.hpp"
 #include "ActsPython/Utilities/Helpers.hpp"
 #include "ActsPython/Utilities/Macros.hpp"
+#include "ActsExamples/Io/Csv/CsvProtoTrackReader.hpp"
+#include "ActsExamples/Io/Csv/CsvEstimatedParamsReader.hpp"
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -58,7 +60,12 @@ void addInput(py::module& mex) {
   ACTS_PYTHON_DECLARE_READER(CsvTrackParameterReader, mex,
                              "CsvTrackParameterReader", inputDir, inputStem,
                              outputTrackParameters, beamspot);
-
+  ACTS_PYTHON_DECLARE_READER(CsvProtoTrackReader, mex,
+                             "CsvProtoTrackReader", inputDir, inputStem,
+                             outputProtoTracks);
+  ACTS_PYTHON_DECLARE_READER(CsvEstimatedParamsReader, mex,
+                             "CsvEstimatedParamsReader", inputDir, inputStem,
+                             outputTrackParameter, beamspot);
   ACTS_PYTHON_DECLARE_READER(CsvGnnGraphReader, mex, "CsvGnnGraphReader",
                              inputDir, inputStem, outputGraph);
 

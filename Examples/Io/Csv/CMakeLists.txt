@@ -22,6 +22,10 @@ acts_add_library(
     src/CsvGnnGraphReader.cpp
     src/CsvBFieldWriter.cpp
     src/CsvVertexWriter.cpp
+    src/CsvProtoTrackReader.cpp
+    src/CsvEstimatedParamsReader.cpp
+    src/CsvEstimatedParamsWriter.cpp
+    src/CsvMyTrackParameterWriter.cpp
 )
 target_include_directories(
     ActsExamplesIoCsv

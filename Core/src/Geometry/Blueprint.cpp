@@ -38,10 +38,11 @@ class BlueprintVisitor : public TrackingGeometryMutableVisitor {
   explicit BlueprintVisitor(
       const Logger &logger,
       std::array<const TrackingVolume *, GeometryIdentifier::getMaxVolume()>
-          &volumesById)
+          &volumesById, const GeometryIdentifierHook& hook)
       : TrackingGeometryMutableVisitor(true),
         m_volumesById(volumesById),
-        m_logger(logger) {}
+        m_logger(logger),
+        m_hook(hook) {}
 
   void visitVolume(TrackingVolume &volume) override {
     GeometryIdentifier::Value iportal = 0;
@@ -82,6 +83,7 @@ class BlueprintVisitor : public TrackingGeometryMutableVisitor {
       }
       isensitive += 1;
       auto surfaceId = id.withSensitive(isensitive);
+      surfaceId = m_hook.decorateIdentifier(surfaceId, surface);
       ACTS_VERBOSE("Assigning surface ID: " << surfaceId);
       surface.assignGeometryId(surfaceId);
     }
@@ -91,7 +93,8 @@ class BlueprintVisitor : public TrackingGeometryMutableVisitor {
   std::array<const TrackingVolume *, GeometryIdentifier::getMaxVolume()>
       &m_volumesById;
   const Logger &m_logger;
-  const Acts::Logger &logger() const { return m_logger; }
+  const Acts::Logger &logger() const { return m_logger; } 
+  const GeometryIdentifierHook& m_hook;
 };
 
 Blueprint::Blueprint(const Config &config) : m_cfg(config) {}
@@ -307,14 +310,14 @@ std::unique_ptr<TrackingGeometry> Blueprint::construct(
 
   ACTS_DEBUG(prefix() << "Assigning volume IDs for remaining volumes");
 
-  BlueprintVisitor visitor{logger, volumesById};
+  BlueprintVisitor visitor{logger, volumesById, *m_cfg.hook};
   world->apply(visitor);
 
   Acts::detail::AlignablePortalVisitor alignPortals{gctx, logger};
   world->apply(alignPortals);
 
   return std::make_unique<TrackingGeometry>(
-      std::move(world), nullptr, GeometryIdentifierHook{}, logger, false);
+      std::move(world), nullptr, *m_cfg.hook, logger, false);
 }
 
 }  // namespace Acts::Experimental

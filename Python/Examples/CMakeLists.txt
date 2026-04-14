@@ -129,6 +129,7 @@ target_link_libraries(
         Acts::ExamplesAmbiguityResolution
         Acts::ExamplesDetectorsCommon
         Acts::ExamplesDetectorGeneric
+        Acts::ExamplesDetectorBelle2
         Acts::ExamplesDetectorTelescope
         Acts::ExamplesDigitization
         Acts::ExamplesGenerators

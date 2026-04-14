@@ -10,6 +10,7 @@
 
 #include "Acts/Geometry/BlueprintNode.hpp"
 #include "Acts/Geometry/PortalShell.hpp"
+#include "Acts/Geometry/GeometryIdentifier.hpp"
 #include "Acts/Geometry/TrackingGeometry.hpp"
 #include "Acts/Geometry/TrackingVolume.hpp"
 
@@ -56,6 +57,8 @@ class Blueprint : public BlueprintNode {
  public:
   /// Configuration for building a blueprint tracking geometry.
   struct Config {
+    std::shared_ptr<Acts::GeometryIdentifierHook> hook = nullptr;
+
     /// Determine how much envelope space to produce from the highest volume
     /// in the geometry hierarchy and the world volume.
     ExtentEnvelope envelope = ExtentEnvelope::Zero();

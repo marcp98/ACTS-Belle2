@@ -47,7 +47,7 @@ def runMaterialMapping(
     # Create a sequencer
     print("Creating the sequencer with 1 thread (inter event information needed)")
 
-    s = Sequencer(numThreads=1)
+    s = Sequencer(numThreads=1, events = 10000)
 
     # IO for material tracks reading
     wb = WhiteBoard(acts.logging.INFO)
@@ -179,13 +179,9 @@ if "__main__" == __name__:
     args = p.parse_args()
     logLevel = logging.INFO
 
-    matDeco = None
-    if args.matconfig != "":
-        matDeco = acts.IMaterialDecorator.fromFile(args.matconfig)
-
-    detector = getOpenDataDetector(matDeco)
+    from acts.examples import Belle2
+    detector = Belle2(buildProto=True)
     trackingGeometry = detector.trackingGeometry()
-
     materialSurfaces = trackingGeometry.extractMaterialSurfaces()
 
     runMaterialMapping(

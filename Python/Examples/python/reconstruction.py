@@ -580,6 +580,48 @@ def addSeeding(
 
     return s
 
+def addMyFitter(
+    s: acts.examples.Sequencer,
+    trackingGeometry: acts.TrackingGeometry,
+    field: acts.MagneticFieldProvider,
+    reverseFilteringMomThreshold: float = 0 * u.GeV,
+    reverseFilteringCovarianceScaling: float = 1.0,
+    inputProtoTracks: str = "truth_particle_tracks",
+    multipleScattering: bool = True,
+    energyLoss: bool = True,
+    clusters: str = None,
+    calibrator: acts.examples.MeasurementCalibrator = acts.examples.makePassThroughCalibrator(),
+    logLevel: Optional[acts.logging.Level] = None,
+    chi2CutOff: float = float("inf"),
+) -> None:
+    customLogLevel = acts.examples.defaultLogging(s, logLevel)
+
+    kalmanOptions = {
+        "multipleScattering": multipleScattering,
+        "energyLoss": energyLoss,
+        "reverseFilteringMomThreshold": reverseFilteringMomThreshold,
+        "reverseFilteringCovarianceScaling": reverseFilteringCovarianceScaling,
+        "freeToBoundCorrection": acts.examples.FreeToBoundCorrection(False),
+        "level": customLogLevel(),
+        "chi2Cut": chi2CutOff,
+    }
+    fitAlg = acts.examples.TrackFittingAlgorithm(
+        level=customLogLevel(),
+        inputMeasurements="measurements",
+        inputProtoTracks=inputProtoTracks,
+        inputInitialTrackParameters="estimatedparameters",
+        inputClusters=clusters if clusters is not None else "",
+        outputTracks="kf_tracks",
+        pickTrack=-1,
+        fit=acts.examples.makeKalmanFitterFunction(
+            trackingGeometry, field, **kalmanOptions
+        ),
+        calibrator=calibrator,
+    )
+    s.addAlgorithm(fitAlg)
+    s.addWhiteboardAlias("tracks", fitAlg.config.outputTracks)
+
+    return s
 
 def addTruthSmearedSeeding(
     s: acts.examples.Sequencer,

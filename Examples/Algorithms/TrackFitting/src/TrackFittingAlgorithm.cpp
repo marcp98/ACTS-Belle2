@@ -111,7 +111,7 @@ ProcessCode TrackFittingAlgorithm::execute(const AlgorithmContext& ctx) const {
   // simply assume 30 states per track for now
   trackContainer->reserve(protoTracks.size());
   trackStateContainer->reserve(protoTracks.size() * 30);
-
+  tracks.addColumn<std::size_t>("protoId");
   // Perform the fit for each input track
   std::vector<Acts::SourceLink> trackSourceLinks;
   for (std::size_t itrack = 0; itrack < protoTracks.size(); ++itrack) {
@@ -156,8 +156,9 @@ ProcessCode TrackFittingAlgorithm::execute(const AlgorithmContext& ctx) const {
 
     if (result.ok()) {
       // Get the fit output object
-      const auto& track = result.value();
+      auto& track = result.value();
       if (track.hasReferenceSurface()) {
+        track.template component<std::size_t>("protoId") = itrack;
         ACTS_VERBOSE("Fitted parameters for track " << itrack);
         ACTS_VERBOSE("  " << track.parameters().transpose());
         ACTS_VERBOSE("Measurements: (proto track->track): "

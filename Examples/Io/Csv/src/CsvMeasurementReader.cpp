@@ -119,7 +119,7 @@ std::vector<MeasurementData> readMeasurementsByGeometryId(
   auto measurements = readEverything<MeasurementData>(
       inputDir, "measurements.csv", {"geometry_id", "t"}, event);
   // sort same way they will be sorted in the output container
-  std::ranges::sort(measurements, CompareGeometryId{});
+  std::ranges::stable_sort(measurements, CompareGeometryId{});
   return measurements;
 }
 

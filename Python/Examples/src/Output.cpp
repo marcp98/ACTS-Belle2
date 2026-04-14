@@ -25,6 +25,8 @@
 #include "ActsExamples/MaterialMapping/IMaterialWriter.hpp"
 #include "ActsExamples/TrackFinding/ITrackParamsLookupWriter.hpp"
 #include "ActsPython/Utilities/Macros.hpp"
+#include "ActsExamples/Io/Csv/CsvMyTrackParameterWriter.hpp"
+#include "ActsExamples/Io/Csv/CsvEstimatedParamsWriter.hpp"
 
 #include <memory>
 #include <string>
@@ -126,6 +128,11 @@ void addOutput(py::module& mex) {
   ACTS_PYTHON_DECLARE_WRITER(CsvTrackParameterWriter, mex,
                              "CsvTrackParameterWriter", inputTracks, outputDir,
                              outputStem, outputPrecision);
+    ACTS_PYTHON_DECLARE_WRITER(CsvMyTrackParameterWriter, mex,
+                             "CsvMyTrackParameterWriter", inputTracks, outputDir,
+                             outputStem, outputPrecision);
+    ACTS_PYTHON_DECLARE_WRITER(CsvEstimatedParamsWriter, mex, "CsvEstimatedParamsWriter",
+                             inputCollection, outputDir, outputStem);
 
   ACTS_PYTHON_DECLARE_WRITER(CsvProtoTrackWriter, mex, "CsvProtoTrackWriter",
                              inputSpacePoints, inputProtoTracks, outputDir);

@@ -95,8 +95,10 @@ def runGeometry(
 
 if "__main__" == __name__:
     # detector = acts.examples.GenericDetector()
-    detector = getOpenDataDetector()
+    from acts.examples import Belle2
+    detector = Belle2()
     trackingGeometry = detector.trackingGeometry()
+    materialSurfaces = trackingGeometry.extractMaterialSurfaces()
     decorators = detector.contextDecorators()
 
     runGeometry(trackingGeometry, decorators, outputDir=Path.cwd())

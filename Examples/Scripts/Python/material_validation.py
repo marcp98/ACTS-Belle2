@@ -174,7 +174,8 @@ def main():
     if args.map != "":
         materialDecorator = acts.IMaterialDecorator.fromFile(args.map)
 
-    detector = getOpenDataDetector(materialDecorator)
+    from acts.examples import Belle2
+    detector = Belle2(materialDecorator = materialDecorator)
     trackingGeometry = detector.trackingGeometry()
 
     materialSurfaces = trackingGeometry.extractMaterialSurfaces()
