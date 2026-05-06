@@ -11,7 +11,7 @@
 #include "Acts/EventData/SourceLink.hpp"
 #include "ActsExamples/EventData/IndexSourceLink.hpp"
 #include "ActsExamples/EventData/Measurement.hpp"
-
+#include "ActsExamples/EventData/DriftChamberCalibrator.hpp"
 #include <cassert>
 
 namespace ActsExamples {
@@ -57,5 +57,43 @@ void MeasurementCalibratorAdapter::calibrate(
   return m_calibrator.calibrate(m_measurements, m_clusters, gctx, cctx,
                                 sourceLink, trackState);
 }
+void ActsExamples::DriftChamberCalibrator::calibrate(
+    const MeasurementContainer& measurements,
+    const ClusterContainer* clusters, 
+    const Acts::GeometryContext& gctx,
+    const Acts::CalibrationContext& cctx, 
+    const Acts::SourceLink& sourceLink,
+    Acts::VectorMultiTrajectory::TrackStateProxy& trackState) const {
 
+    trackState.setUncalibratedSourceLink(Acts::SourceLink{sourceLink});
+    const IndexSourceLink& idxSourceLink = sourceLink.get<IndexSourceLink>();
+
+    // 1. Hole den dynamischen MeasurementProxy
+    auto rawMeasurement = measurements.at(idxSourceLink.index());
+    
+    // 2. Kopiere die Daten in dynamische Eigen-Typen
+    Eigen::VectorXd params = rawMeasurement.parameters();
+    Eigen::MatrixXd cov = rawMeasurement.covariance();
+    
+    // Fix 1: Die Indizes heißen in dieser Version 'subspaceIndexVector()'
+    auto indices = rawMeasurement.subspaceIndexVector(); 
+    
+    if (rawMeasurement.size() == 1) {
+        if (indices[0] == Acts::eBoundLoc0 && trackState.hasPredicted()) {
+            double predictedLoc0 = trackState.predicted()[Acts::eBoundLoc0];
+            
+            double absDrift = std::abs(params[0]);
+            params[0] = (predictedLoc0 < 0.0) ? -absDrift : absDrift;
+        }
+    }
+    
+    // 3. Speicherplatz anhand der dynamischen Größe allokieren
+    trackState.allocateCalibrated(rawMeasurement.size());
+    
+    trackState.setProjectorSubspaceIndices(indices);
+    
+
+    trackState.effectiveCalibrated() = params;
+    trackState.effectiveCalibratedCovariance() = cov;
+}
 }  // namespace ActsExamples

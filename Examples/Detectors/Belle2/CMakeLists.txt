@@ -5,6 +5,7 @@ acts_add_library(
     src/LayerBuilder.cpp
     src/ProtoLayerCreator.cpp
     src/Belle2Builder.cpp
+    src/CDCWireElement.cpp
 )
 
 acts_compile_headers(ExamplesDetectorBelle2 GLOB "include/**/*.hpp")

@@ -239,6 +239,8 @@ void ActsPlugins::TGeoLayerBuilder::buildLayers(const GeometryContext& gctx,
       TGeoParser::State tgpState;
       tgpState.volume = tVolume;
 
+      
+
       ACTS_DEBUG("- applying  " << layerCfg.parseRanges.size()
                                 << " search restrictions.");
       for (const auto& [axisDir, pRange] : layerCfg.parseRanges) {

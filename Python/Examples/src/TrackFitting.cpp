@@ -16,6 +16,7 @@
 #include "ActsExamples/TrackFitting/TrackFittingAlgorithm.hpp"
 #include "ActsPython/Utilities/Helpers.hpp"
 #include "ActsPython/Utilities/Macros.hpp"
+#include "ActsExamples/EventData/DriftChamberCalibrator.hpp"
 
 #include <cstddef>
 #include <memory>
@@ -73,6 +74,11 @@ void addTrackFitting(py::module& mex) {
             []() -> std::shared_ptr<MeasurementCalibrator> {
               return std::make_shared<PassThroughCalibrator>();
             });
+    mex.def("makeDriftChamberCalibrator",
+        []() -> std::shared_ptr<MeasurementCalibrator> {
+          return std::make_shared<ActsExamples::DriftChamberCalibrator>();
+        });
+            
 
     py::enum_<ComponentMergeMethod>(mex, "ComponentMergeMethod")
         .value("mean", ComponentMergeMethod::eMean)
