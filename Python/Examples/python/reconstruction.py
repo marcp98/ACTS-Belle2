@@ -1529,7 +1529,7 @@ def addKalmanTracks(
         "reverseFilteringCovarianceScaling": reverseFilteringCovarianceScaling,
         "freeToBoundCorrection": acts.examples.FreeToBoundCorrection(False),
         "level": customLogLevel(),
-        "chi2Cut": 50,
+        "chi2Cut": float("inf"),
     }
 
     fitAlg = acts.examples.TrackFittingAlgorithm(

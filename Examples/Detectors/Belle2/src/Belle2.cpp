@@ -241,9 +241,10 @@ void Gen3Belle2Builder::buildCDC(Acts::Experimental::BlueprintNode& parent,
 
             layer.setProtoLayer(cdcLayers[i].protoLayer);
             layer.setEnvelope(
-                Acts::ExtentEnvelope{{.z = {5_mm, 5_mm}, .r = {2_mm, 2_mm}}});
+                Acts::ExtentEnvelope{{.z = {5_mm, 5_mm}, .r = {0_mm, 0_mm}}});
             layer.setNavigationPolicyFactory(createNavigationPolicy2());
           });
+          /*
           std::string suppName = name + "_Support";
             cdcVol.addLayer(suppName, [&](auto& suppLayer) {
               double layerRadius =
@@ -271,7 +272,7 @@ void Gen3Belle2Builder::buildCDC(Acts::Experimental::BlueprintNode& parent,
                   Acts::ExtentEnvelope{{.z = {2_mm, 2_mm}, .r = {2_mm, 2_mm}}});
 
               suppLayer.setNavigationPolicyFactory(createNavigationPolicy2());
-            });
+            });*/
         }
         cdcVol.setNavigationPolicyFactory(createNavigationPolicy2());
       });
@@ -301,7 +302,7 @@ std::vector<ProtoLayerSurfaces> Gen3Belle2Builder::buildCDCLayers(
                    << sVector.size() << " surfaces at r = "
                    << pl.medium(Acts::AxisDirection::AxisR));
 
-        pl.envelope[Acts::AxisDirection::AxisR] = {1, 1};
+        pl.envelope[Acts::AxisDirection::AxisR] = {0, 0};
         pl.envelope[Acts::AxisDirection::AxisZ] = {5, 5};
         ProtoLayerSurfaces pls{std::move(pl), sVector, nb0, nb1};
         cpLayers.push_back(std::move(pls));
@@ -334,7 +335,7 @@ std::vector<ProtoLayerSurfaces> Gen3Belle2Builder::buildCDCLayers(
       tokens.push_back(cell);
     }
 
-    if (tokens.size() < 17) continue;
+    if (tokens.size() < 18) continue;
 
     unsigned int layerIndex = std::stoul(tokens[1]); 
     unsigned int wireIndex = std::stoul(tokens[2]);
@@ -347,13 +348,18 @@ std::vector<ProtoLayerSurfaces> Gen3Belle2Builder::buildCDCLayers(
     double r00 = std::stod(tokens[8]),  r10 = std::stod(tokens[9]),  r20 = std::stod(tokens[10]);
     double r01 = std::stod(tokens[11]), r11 = std::stod(tokens[12]), r21 = std::stod(tokens[13]);
     double r02 = std::stod(tokens[14]), r12 = std::stod(tokens[15]), r22 = std::stod(tokens[16]);
+    double cell_size = std::abs(std::stod(tokens[17]));
+    if(cell_size<1.0) cell_size = 18.0;
 
     Acts::GeometryIdentifier geoId = Acts::GeometryIdentifier()
                                          .withVolume(14)
                                          .withLayer(layerIndex + 1)
                                          .withSensitive(wireIndex + 1);
 
-    auto bounds = std::make_shared<const Acts::LineBounds>(20.0, halfLength); //TODO: Insert actual radius of the driftcells
+    auto bounds = std::make_shared<const Acts::LineBounds>((cell_size/2.0) - 1.2, halfLength); //TODO: Check for overlapping, this causes holes in the trajectory
+    //Right now maximum of ~3 holes in 56 layers, but check it
+
+    ACTS_FATAL(layerIndex<<" "<<cell_size);
     Acts::Transform3 transform = Acts::Transform3::Identity();
 
     Acts::RotationMatrix3 rot;
