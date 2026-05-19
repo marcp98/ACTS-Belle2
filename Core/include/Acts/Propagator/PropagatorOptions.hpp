@@ -31,7 +31,7 @@ struct PurePropagatorPlainOptions {
   ///
   /// This ensures that the propagation does not hang in the stepping loop in
   /// case of misconfiguration or bugs.
-  unsigned int maxSteps = 1000;
+  unsigned int maxSteps = 5000;
 
   /// Maximum number of next target calls for one step
   ///

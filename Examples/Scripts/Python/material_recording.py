@@ -96,10 +96,10 @@ def runMaterialRecording(
 def main():
     p = argparse.ArgumentParser()
     p.add_argument(
-        "-n", "--events", type=int, default=1000, help="Number of events to generate"
+        "-n", "--events", type=int, default=10000, help="Number of events to generate"
     )
     p.add_argument(
-        "-t", "--tracks", type=int, default=100, help="Particle tracks per event"
+        "-t", "--tracks", type=int, default=200, help="Particle tracks per event"
     )
     p.add_argument(
         "-i", "--input", type=str, default="", help="input (GDML/SQL) file (optional)"

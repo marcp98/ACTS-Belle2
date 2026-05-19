@@ -33,7 +33,7 @@ class Belle2 : public Detector {
 		Acts::Logging::Level surfaceLogLevel = Acts::Logging::VERBOSE;
 		Acts::Logging::Level layerLogLevel = Acts::Logging::VERBOSE;
 		Acts::Logging::Level volumeLogLevel = Acts::Logging::VERBOSE;
-		bool buildProto = true;
+		bool buildProto = false;
 		std::shared_ptr<const Acts::IMaterialDecorator> materialDecorator;
 		bool gen3 = true;
 		std::optional<std::filesystem::path> graphvizFile = "./belle2_graphviz.dot";

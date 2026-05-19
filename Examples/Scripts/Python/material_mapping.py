@@ -148,7 +148,7 @@ if "__main__" == __name__:
     p = argparse.ArgumentParser()
 
     p.add_argument(
-        "-n", "--events", type=int, default=1000, help="Number of events to process"
+        "-n", "--events", type=int, default=10000, help="Number of events to process"
     )
     p.add_argument(
         "-i", "--input", type=str, default="", help="Input file with material tracks"
@@ -175,7 +175,7 @@ if "__main__" == __name__:
         default="material_tracks",
         help="Input material track collection name",
     )
-
+    
     args = p.parse_args()
     logLevel = logging.INFO
 

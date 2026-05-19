@@ -197,11 +197,16 @@ Belle2Builder::Belle2Builder(const Config& cfg, std::unique_ptr<const Acts::Logg
     ///
     /// BeamPipe material
     ///
-    const auto beryllium = Acts::Material::fromMassDensity(static_cast<float>(352.8_mm), static_cast<float>(407_mm), 9.012f, 4.0,static_cast<float>(1.848_g / 1_cm3));
-    m_beamPipeMaterial = std::make_shared<const Acts::HomogeneousSurfaceMaterial>(Acts::MaterialSlab(beryllium, static_cast<float>(0.8_mm)));
-    if (m_cfg.protoMaterial) {
-      m_beamPipeMaterial = pCylinderMaterial;
-    }
+    const auto beryllium = Acts::Material::fromMassDensity(
+        static_cast<float>(352.8_mm), 
+        static_cast<float>(407_mm), 
+        9.012f, 
+        4.0f, 
+        static_cast<float>(1.848_g / 1_cm3)
+    );
+    m_beamPipeMaterial = std::make_shared<const Acts::HomogeneousSurfaceMaterial>(
+        Acts::MaterialSlab(beryllium, static_cast<float>(1.0_mm))
+    );
 
     ///
     /// PIXEL MATERIAL

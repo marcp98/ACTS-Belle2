@@ -124,7 +124,7 @@ def main():
     p = argparse.ArgumentParser()
 
     p.add_argument(
-        "-n", "--events", type=int, default=1000, help="Number of events to process"
+        "-n", "--events", type=int, default=10000, help="Number of events to process"
     )
     p.add_argument(
         "-t", "--tracks", type=int, default=100, help="Number of tracks per event"
