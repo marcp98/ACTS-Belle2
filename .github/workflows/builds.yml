@@ -44,7 +44,7 @@ jobs:
 
       - name: Restore ccache
         id: ccache-restore
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os  }}-${{ github.job }}-${{ env.CCACHE_KEY_SUFFIX }}-${{ github.sha }}
@@ -71,7 +71,7 @@ jobs:
         run: ccache -s
 
       - name: Save ccache
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         if: always()
         with:
           path: ${{ github.workspace }}/ccache
@@ -260,7 +260,7 @@ jobs:
           env_file: .env
 
       - name: Restore ccache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         id: ccache-restore
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -285,7 +285,7 @@ jobs:
         run: ccache -s
 
       - name: Save ccache
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         if: always()
         with:
           path: ${{ github.workspace }}/ccache
@@ -345,7 +345,7 @@ jobs:
           env_file: .env
 
       - name: Restore ccache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         id: ccache-restore
         env:
           DYLD_LIBRARY_PATH: ""
@@ -370,7 +370,7 @@ jobs:
         run: ccache -s
 
       - name: Save ccache
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         if: always()
         with:
           path: ${{ github.workspace }}/ccache
@@ -426,7 +426,7 @@ jobs:
 
       - name: Restore ccache
         id: ccache-restore
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os  }}-${{ github.job }}-${{ env.CCACHE_KEY_SUFFIX }}-${{ github.sha }}
@@ -520,7 +520,7 @@ jobs:
           retention-days: 5
 
       - name: Save ccache
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         if: always()
         with:
           path: ${{ github.workspace }}/ccache
@@ -621,7 +621,7 @@ jobs:
 
       - name: Restore ccache
         id: ccache-restore
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os  }}-${{ github.job }}-${{ env.CCACHE_KEY_SUFFIX }}-${{ github.sha }}
@@ -641,7 +641,7 @@ jobs:
         run: CI/dependencies/run.sh .env pip install $(ls ./*.whl)
 
       - name: Save ccache
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         if: always()
         with:
           path: ${{ github.workspace }}/ccache
