@@ -187,7 +187,7 @@ Gen3Belle2Builder::buildTrackingGeometry(
     buildBeamPipe(detector, gctx);
     buildDummyPXD(detector, gctx);
     buildSVD(detector, gctx);
-    buildCDC(detector, gctx);
+    // buildCDC(detector, gctx);
   });
 
   if (graphvizFile) {
@@ -390,7 +390,7 @@ void Gen3Belle2Builder::buildCDC(Acts::Experimental::BlueprintNode& parent,
   auto cdcLayers = buildCDCLayers(gctx);
 
   auto cdcBounds =
-      std::make_shared<Acts::CylinderVolumeBounds>(0_mm, 3000_mm, 3000_mm);
+      std::make_shared<Acts::CylinderVolumeBounds>(150_mm, 3000_mm, 3000_mm);
 
   struct TrackingVolumeAccessor
       : public Acts::Experimental::StaticBlueprintNode {
@@ -517,7 +517,7 @@ std::vector<ProtoLayerSurfaces> Gen3Belle2Builder::buildCDCLayers(
       cell_size = 18.0;
 
     Acts::GeometryIdentifier geoId = Acts::GeometryIdentifier()
-                                         .withVolume(14)
+                                         .withVolume(69)
                                          .withLayer(layerIndex + 1)
                                          .withSensitive(wireIndex + 1);
 
@@ -526,10 +526,9 @@ std::vector<ProtoLayerSurfaces> Gen3Belle2Builder::buildCDCLayers(
         halfLength);  // TODO: Check for overlapping, this causes holes in the
                       // trajectory
     // Right now maximum of ~3 holes in 56 layers, but check it
-    if (layerIndex == 7){
-        auto bounds = std::make_shared<const Acts::LineBounds>(
-        (cell_size / 2.0) - 3.8,
-        halfLength);
+    if (layerIndex == 7) {
+      auto bounds = std::make_shared<const Acts::LineBounds>(
+          (cell_size / 2.0) - 3.8, halfLength);
     }
 
     Acts::Transform3 transform = Acts::Transform3::Identity();
@@ -613,6 +612,7 @@ void Gen3Belle2Builder::buildSVD(Acts::Experimental::BlueprintNode& parent,
     matNode.addStaticVolume(
         Acts::Transform3::Identity(), svdBounds, "SVD_Container",
         [&](auto& svdVol) {
+          /*
           svdVol.addLayer("suppLayer1", [&](auto& suppLayer) {
             auto bounds = std::make_shared<Acts::CylinderBounds>(30_mm, 600);
             auto surf = Acts::Surface::makeShared<Acts::CylinderSurface>(
@@ -672,7 +672,7 @@ void Gen3Belle2Builder::buildSVD(Acts::Experimental::BlueprintNode& parent,
             suppLayer.setProtoLayer(pl);
             suppLayer.setEnvelope(
                 Acts::ExtentEnvelope{{.z = {1_mm, 1_mm}, .r = {1_mm, 1_mm}}});
-          });
+          });*//*
           svdVol.addLayer("suppLayer5", [&](auto& suppLayer) {
             auto bounds = std::make_shared<Acts::CylinderBounds>(145_mm, 600);
             auto surf = Acts::Surface::makeShared<Acts::CylinderSurface>(
@@ -687,7 +687,8 @@ void Gen3Belle2Builder::buildSVD(Acts::Experimental::BlueprintNode& parent,
             suppLayer.setProtoLayer(pl);
             suppLayer.setEnvelope(
                 Acts::ExtentEnvelope{{.z = {1_mm, 1_mm}, .r = {1_mm, 1_mm}}});
-          });
+          });*/
+          /*
           svdVol.addLayer("SVD_SuppDisk1", [&](auto& layer) {
             // Symmetrisch auf der anderen Seite (zz.B. Z = -150 mm)
             double discZ = -150.0_mm;
@@ -753,7 +754,7 @@ void Gen3Belle2Builder::buildSVD(Acts::Experimental::BlueprintNode& parent,
             layer.setProtoLayer(pl);
             layer.setEnvelope(
                 Acts::ExtentEnvelope{{.z = {1_mm, 1_mm}, .r = {0_mm, 0_mm}}});
-          });
+          });*/
 
           for (int i = 0; i < 4; ++i) {
             std::string name = "SVD_Layer" + std::to_string(i + 3);
@@ -763,15 +764,17 @@ void Gen3Belle2Builder::buildSVD(Acts::Experimental::BlueprintNode& parent,
 
               layer.setEnvelope(
                   Acts::ExtentEnvelope{{.z = {5_mm, 5_mm}, .r = {5_mm, 5_mm}}});
-
-              layer.setNavigationPolicyFactory(createNavigationPolicy3(
-                  LayerType::Cylinder,
-                  {svdLayers[i].bins0, svdLayers[i].bins1}));
+              /*
+                            layer.setNavigationPolicyFactory(createNavigationPolicy3(
+                                LayerType::Cylinder,
+                                {svdLayers[i].bins0, svdLayers[i].bins1}));
+                          */
+              layer.setNavigationPolicyFactory(createNavigationPolicy2());
             });
           }
 
           auto* volPtr = TrackingVolumeAccessor::getVolume(svdVol);
-
+          
           for (auto& slantedLayer :
                {svdLayers[4], svdLayers[5], svdLayers[6]}) {
             for (auto s : slantedLayer.protoLayer.surfaces()) {
@@ -903,6 +906,10 @@ std::vector<ProtoLayerSurfaces> Gen3Belle2Builder::buildLayers(
         m_elementStore.push_back(tgElementFront);
 
         auto sensorSurface = tgElementFront->surface().getSharedPtr();
+
+        ACTS_DEBUG("- sensor " << layerCfg.volumeName << " bounds type : "
+                               << sensorSurface->bounds().type() << " -> "
+                               << sensorSurface->bounds());
 
         if (sensorSurface->bounds().type() ==
             Acts::SurfaceBounds::eConvexPolygon) {
@@ -1099,7 +1106,7 @@ Belle2::Belle2(const Config& cfg)
       if (surface) {
         m_cfg.materialDecorator->decorate(const_cast<Acts::Surface&>(*surface));
       }
-    });
+    }, false);
     m_trackingGeometry->visitVolumes([&](const Acts::TrackingVolume* volume) {
       if (volume) {
         m_cfg.materialDecorator->decorate(

@@ -29,10 +29,10 @@ class Belle2 : public Detector {
  public:
   struct Config {
     std::size_t buildLevel = 3;
-    Acts::Logging::Level logLevel = Acts::Logging::INFO;
-    Acts::Logging::Level surfaceLogLevel = Acts::Logging::INFO;
-    Acts::Logging::Level layerLogLevel = Acts::Logging::INFO;
-    Acts::Logging::Level volumeLogLevel = Acts::Logging::INFO;
+    Acts::Logging::Level logLevel = Acts::Logging::DEBUG;
+    Acts::Logging::Level surfaceLogLevel = Acts::Logging::DEBUG;
+    Acts::Logging::Level layerLogLevel = Acts::Logging::DEBUG;
+    Acts::Logging::Level volumeLogLevel = Acts::Logging::DEBUG;
     bool buildProto = false;
     std::shared_ptr<const Acts::IMaterialDecorator> materialDecorator;
     bool gen3 = true;
